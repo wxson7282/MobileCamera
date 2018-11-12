@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">相机遥控器</string>
+    <string name="title_activity_main">相机遥控器</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="localDeviceInfo">本设备信息</string>
+    <string name="DeviceName">设备名称：</string>
+    <string name="MacAddress">MAC地址：</string>
+    <string name="IpAddress">IP地址：</string>
+    <string name="DeviceStatus">设备状态：</string>
+    <string name="ConnectStatus">连接状态：</string>
+    <string name="FileList">文件发送列表</string>
+    <string name="DeviceList">设备列表</string>
+    <string name="Disconnect">断开连接</string>
+    <string name="ChooseFile">选择文件</string>
+    <string name="ModuleIntroduce">遥控相机</string>
+    <string name="Instruction">控制指令：</string>
+    <string name="SendInstruction">发送指令</string>
+    <string name="title_connect">连接</string>
+    <string name="title_camera">相机</string>
+    <string name="menuDirectEnable">Wifi 开关</string>
+    <string name="menuDirectDiscover">搜索</string>
+</resources>
