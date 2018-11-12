@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">移动相机</string>
+    <string name="createGroup">建组</string>
+    <string name="deleteGroup">删组</string>
+    <string name="capture">拍照</string>
+    <string name="camera_rationale">本APP运行必须取得相机控制权限</string>
+</resources>
