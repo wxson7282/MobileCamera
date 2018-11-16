@@ -21,4 +21,5 @@
     <string name="title_camera">相机</string>
     <string name="menuDirectEnable">Wifi 开关</string>
     <string name="menuDirectDiscover">搜索</string>
+    <string name="location_rationale">本APP运行必须取得定位权限</string>
 </resources>

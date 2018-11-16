@@ -57,6 +57,12 @@ public class DirectBroadcastReceiver extends BroadcastReceiver {
                     int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
                     if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
                         mDirectActionListener.wifiP2pEnabled(true);
+//                        mWifiP2pManager.requestPeers(mChannel, new WifiP2pManager.PeerListListener() {
+//                            @Override
+//                            public void onPeersAvailable(WifiP2pDeviceList wifiP2pDeviceList) {
+//                                mDirectActionListener.onPeersAvailable(wifiP2pDeviceList.getDeviceList());
+//                            }
+//                        });
                     } else {
                         mDirectActionListener.wifiP2pEnabled(false);
                         List<WifiP2pDevice> wifiP2pDeviceList = new ArrayList<>();

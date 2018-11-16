@@ -1,9 +1,11 @@
 package com.wxson.mobilecontroller;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
@@ -15,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.wxson.mobilecomm.connect.ByteBufferTransferTask;
 import com.wxson.mobilecontroller.camera_manager.CameraManagerFragment;
@@ -29,10 +32,13 @@ import com.wxson.mobilecontroller.home.HomeFragment;
 import java.net.InetAddress;
 import java.util.List;
 
+import pub.devrel.easypermissions.EasyPermissions;
+
 public class MainActivity extends AppCompatActivity
         implements ConnectFragment.OnFragmentInteractionListener,
         CameraManagerFragment.OnFragmentInteractionListener,
-        HomeFragment.OnFragmentInteractionListener{
+        HomeFragment.OnFragmentInteractionListener,
+        EasyPermissions.PermissionCallbacks{
 
     protected static final String TAG = "MainActivity";
     //当前显示的fragment的key
@@ -119,6 +125,11 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //申请定位权限
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            requestLocationPermission();
+        }
+
         //绑定WifiServerService
         bindService();
         //正常启动时调用
@@ -172,6 +183,53 @@ public class MainActivity extends AppCompatActivity
         stopService(new Intent(this, ControllerWifiServerService.class));
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.i(TAG, "onRequestPermissionsResult");
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    //下面两个方法是实现EasyPermissions的EasyPermissions.PermissionCallbacks接口
+    //分别返回授权成功和失败的权限
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+        Log.i(TAG, "onPermissionsGranted");
+        Log.i(TAG, "获取权限成功" + perms);
+        showToast("获取权限成功");
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+        Log.i(TAG, "onPermissionsDenied");
+        Log.i(TAG, "获取权限失败，退出当前页面" + perms);
+        showToast("获取权限失败");
+        this.finish();  //退出当前页面
+    }
+
+    //requestCode
+    private static final int REQUEST_LOCATION_PERMISSION = 1;
+
+    private void requestLocationPermission(){
+        Log.i(TAG, "requestLocationPermission");
+        String[] perms = {Manifest.permission.ACCESS_COARSE_LOCATION};
+        if (EasyPermissions.hasPermissions(this, perms)){
+            // Already have permission, do the thing
+            Log.i(TAG, "已获取定位权限");
+        }
+        else{
+            // Do not have permissions, request them now
+            Log.i(TAG, "申请定位权限");
+            EasyPermissions.requestPermissions(this, getString(R.string.location_rationale),
+                    REQUEST_LOCATION_PERMISSION, perms);
+        }
+    }
+
+    protected void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
     private void bindService() {
         Intent intent = new Intent(MainActivity.this, ControllerWifiServerService.class);
         bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
