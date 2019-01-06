@@ -67,7 +67,7 @@ public class RemoteTextureView extends TextureView implements TextureView.Surfac
             public void onFirstByteBufferArrived(byte[] csd) {
                 //准备解码器
                 Surface surface = new Surface(RemoteTextureView.super.getSurfaceTexture());
-                mMediaCodec = MediaCodecAction.PrepareDecoder(surface, csd);
+                mMediaCodec = MediaCodecAction.PrepareDecoder(surface, csd, mContext);
                 //启动解码器
                 MediaCodecAction.StartDecoder(mMediaCodec);
                 Log.i(TAG, "onFirstByteBufferArrived StartDecoder");

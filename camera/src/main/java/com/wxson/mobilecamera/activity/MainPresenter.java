@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
@@ -21,12 +22,15 @@ import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
 import android.media.MediaCodec;
+import android.media.MediaFormat;
 import android.net.Uri;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
 import android.os.IBinder;
+import android.preference.ListPreference;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
@@ -40,7 +44,7 @@ import android.webkit.MimeTypeMap;
 import com.wxson.mobilecamera.R;
 import com.wxson.mobilecamera.connect.CameraWifiServerService;
 import com.wxson.mobilecamera.mediacodec.MediaCodecCallback;
-import com.wxson.mobilecomm.codec.H264VgaFormat;
+import com.wxson.mobilecomm.codec.*;
 import com.wxson.mobilecomm.connect.ByteBufferTransfer;
 import com.wxson.mobilecomm.connect.ByteBufferTransferTask;
 import com.wxson.mobilecomm.connect.DirectBroadcastReceiver;
@@ -94,10 +98,6 @@ public class MainPresenter implements IMainContract.Presenter {
     // 预览尺寸
     private Size mPreviewSize;
 
-    //MediaCodec
-    //编码类型
-    private String mime = "video/avc";      //H264
-    //    private String mime = MediaFormat.MIMETYPE_VIDEO_HEVC;      //H265
     //编解码器
     private MediaCodec mMediaCodec;
     //ByteBufferTransfer
@@ -632,21 +632,32 @@ public class MainPresenter implements IMainContract.Presenter {
             mPreviewRequestBuilder.addTarget(new Surface(texture));
 
             //region added by wan
-            // 根据视频编码类型创建解码器
+            //取得预设的编码格式
+            SharedPreferences sharedPreferences =PreferenceManager.getDefaultSharedPreferences(mContext);
+            String mime = sharedPreferences.getString("mime_list", "");
+            // 根据视频编码类型创建编码器
             mMediaCodec = MediaCodec.createEncoderByType(mime);
             // Set up Callback for the Encoder
             final int PORT = mMainView.getActivity().getResources().getInteger(R.integer.portNumberB);
             MediaCodecCallback mediaCodecCallback = new MediaCodecCallback(mByteBufferTransfer, PORT, this);
             mMediaCodec.setCallback(mediaCodecCallback.getCallback());
 
+            //取得预设的分辨率
+            String size = sharedPreferences.getString("size_list", "");
+            int width = Integer.parseInt(size.split("x")[0]);
+            int height = Integer.parseInt(size.split("x")[1]);
+
             //set up output mediaFormat
-            H264VgaFormat h264VgaFormat = new H264VgaFormat();
-//            H265VgaFormat h265VgaFormat = new H265VgaFormat();
-//            H264QVgaFormat qVgaFormat = new H264QVgaFormat();
+            IFormatModel codecFormat;
+            if (mime.equals(MediaFormat.MIMETYPE_VIDEO_HEVC)){
+                codecFormat = new H265Format(width, height);
+            }
+            else{
+                codecFormat = new H264Format(width, height);
+            }
+
             // configure mMediaCodec
-            mMediaCodec.configure(h264VgaFormat.getEncodeFormat(), null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
-//            mMediaCodec.configure(h265VgaFormat.getEncodeFormat(), null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
-//            mMediaCodec.configure(qVgaFormat.getEncodeFormat(), null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
+            mMediaCodec.configure(codecFormat.getEncodeFormat(), null, null,MediaCodec.CONFIGURE_FLAG_ENCODE);
 
             // Set up Surface for the Encoder
             Surface encoderInputSurface = MediaCodec.createPersistentInputSurface();

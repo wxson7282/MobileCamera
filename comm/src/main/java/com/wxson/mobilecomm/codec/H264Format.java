@@ -10,27 +10,26 @@ import static com.wxson.mobilecomm.codec.AvcUtils.getPps;
 import static com.wxson.mobilecomm.codec.AvcUtils.getSps;
 import static com.wxson.mobilecomm.codec.AvcUtils.goToPrefix;
 
-/**
- * Created by wxson on 2018/7/11.
- * Package com.wxson.common_lib.
- */
-public abstract class H264FormatModel {
+public class H264Format implements IFormatModel {
 
-    private static final String TAG = "H264FormatModel";
+    private int mWidth;
+    private int mHeight;
+    private static final String TAG = "H264Format";
     private String mMime = "video/avc";
 
-    public abstract int getWidth();
-    public abstract int getHeight();
+    public H264Format(int width, int height) {
+        this.mWidth = width;
+        this.mHeight = height;
+    }
 
-    public MediaFormat getEncodeFormat(){
-        int width = getWidth();
-        int height = getHeight();
+    @Override
+    public MediaFormat getEncodeFormat() {
         int frameRate = 30;
         int frameInterval = 0;  //每一帧都是关键帧
         int bitRateFactor = 14;
 
-        MediaFormat encodeFormat = MediaFormat.createVideoFormat(mMime, width, height);
-        encodeFormat.setInteger(MediaFormat.KEY_BIT_RATE, width * height * bitRateFactor);
+        MediaFormat encodeFormat = MediaFormat.createVideoFormat(mMime, mWidth, mHeight);
+        encodeFormat.setInteger(MediaFormat.KEY_BIT_RATE, mWidth * mHeight * bitRateFactor);
         encodeFormat.setInteger(MediaFormat.KEY_FRAME_RATE, frameRate);
         encodeFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
         encodeFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, frameInterval);
@@ -38,9 +37,8 @@ public abstract class H264FormatModel {
         return encodeFormat;
     }
 
-    public MediaFormat getDecodeFormat(byte[] csd){
-        int width = getWidth();
-        int height = getHeight();
+    @Override
+    public MediaFormat getDecodeFormat(byte[] csd) {
         //分割spsPps
         ByteBuffer csdByteBuffer = ByteBuffer.wrap(csd);
         if (csdByteBuffer == null){
@@ -55,11 +53,12 @@ public abstract class H264FormatModel {
         byte[] header_sps = getSps(csdByteBuffer);
         byte[] header_pps = getPps(csdByteBuffer);
 
-        MediaFormat decodeFormat = MediaFormat.createVideoFormat(mMime, width, height);
-        decodeFormat.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, width * height);
+        MediaFormat decodeFormat = MediaFormat.createVideoFormat(mMime, mWidth, mHeight);
+        decodeFormat.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, mWidth * mHeight);
         decodeFormat.setByteBuffer("csd-0", ByteBuffer.wrap(header_sps));
         decodeFormat.setByteBuffer("csd-1", ByteBuffer.wrap(header_pps));
 
         return decodeFormat;
+
     }
 }

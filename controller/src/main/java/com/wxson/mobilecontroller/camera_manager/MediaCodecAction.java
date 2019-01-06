@@ -1,10 +1,16 @@
 package com.wxson.mobilecontroller.camera_manager;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.MediaCodec;
+import android.media.MediaFormat;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Surface;
 
-import com.wxson.mobilecomm.codec.H264VgaFormat;
+import com.wxson.mobilecomm.codec.H264Format;
+import com.wxson.mobilecomm.codec.H265Format;
+import com.wxson.mobilecomm.codec.IFormatModel;
 
 import java.io.IOException;
 
@@ -15,22 +21,38 @@ import java.io.IOException;
 public class MediaCodecAction {
     private static final String TAG = "MediaCodecAction";
 
-    public static MediaCodec PrepareDecoder(Surface surface, byte[] csd){
+    public static MediaCodec PrepareDecoder(Surface surface, byte[] csd, Context context){
         //编码类型 H264
-        String mime = "video/avc";
+//        String mime = "video/avc";
 //        //编码类型 H265
 //        String mime = "video/hevc";
+
+        //取得预设的编码格式
+        SharedPreferences sharedPreferences =PreferenceManager.getDefaultSharedPreferences(context);
+        String mime = sharedPreferences.getString("mime_list", "");
+        //取得预设的分辨率
+        String size = sharedPreferences.getString("size_list", "");
+        int width = Integer.parseInt(size.split("x")[0]);
+        int height = Integer.parseInt(size.split("x")[1]);
+
         try {
             MediaCodec mediaCodec = MediaCodec.createDecoderByType(mime);
             //注册解码器回调
             DecoderCallback decoderCallback = new DecoderCallback();
             mediaCodec.setCallback(decoderCallback.getCallback());
             //设定格式
-//            H265VgaFormat h265VgaFormat = new H265VgaFormat();
-            H264VgaFormat h264VgaFormat = new H264VgaFormat();
-//            H264QVgaFormat qVgaFormat = new H264QVgaFormat();
+            IFormatModel codecFormat;
+            if (mime.equals(MediaFormat.MIMETYPE_VIDEO_HEVC)){
+                codecFormat = new H265Format(width, height);
+            }
+            else{
+                codecFormat = new H264Format(width, height);
+            }
+//            IFormatModel codecFormat = new H264Format(640, 480);
+
 //            mediaCodec.configure(h265VgaFormat.getDecodeFormat(csd), surface, null, 0);
-            mediaCodec.configure(h264VgaFormat.getDecodeFormat(csd), surface, null, 0);
+//            mediaCodec.configure(h264_640x480_Format.getDecodeFormat(csd), surface, null, 0);
+            mediaCodec.configure(codecFormat.getDecodeFormat(csd), surface, null, 0);
 //            mediaCodec.configure(qVgaFormat.getDecodeFormat(csd), surface, null, 0);
             Log.e(TAG, "DecoderCallback mMediaCodec.configure");
             return mediaCodec;

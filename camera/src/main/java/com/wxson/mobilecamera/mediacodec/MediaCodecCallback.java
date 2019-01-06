@@ -13,7 +13,8 @@ import com.wxson.mobilecomm.connect.IWifiP2pConnectStatusListener;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 
-import static com.wxson.mobilecomm.tool.CommonTools.bytesToHex;
+import static com.wxson.mobilecomm.codec.AvcUtils.GetCsd;
+//import static com.wxson.mobilecomm.tool.CommonTools.bytesToHex;
 
 /**
  * Created by wxson on 2018/4/26.
@@ -43,19 +44,32 @@ public class MediaCodecCallback {
             //region for debug only
             //取得ByteBuffer
             ByteBuffer outputBuffer = mediaCodec.getOutputBuffer(index);
-            if ((outputBuffer.get(4) & 0x1f) == 7) {    //h264: sps + pps
-                byte[] csd = new byte[outputBuffer.remaining()];
-                outputBuffer.get(csd);
-                mByteBufferTransfer.setCsd(csd);
-                Log.i(TAG, "SpsPps=" + bytesToHex(csd));
-            }
-//            int nalType = (outputBuffer.get(4) >> 1) & 0x3f;
-//            if (nalType == 32){                         //h265
+//            // for h264
+//            if ((outputBuffer.get(4) & 0x1f) == 7) {    //h264: sps + pps
 //                byte[] csd = new byte[outputBuffer.remaining()];
 //                outputBuffer.get(csd);
 //                mByteBufferTransfer.setCsd(csd);
-//                Log.i(TAG, "h265 csd0=" + bytesToHex(csd));
+//                Log.i(TAG, "h264 Sps+Pps=" + bytesToHex(csd));
 //            }
+//            else{
+//                // for h265
+//                int nalType = (outputBuffer.get(4) >> 1) & 0x3f;
+//                if (nalType == 32){                         //h265
+//                    byte[] csd = new byte[outputBuffer.remaining()];
+//                    outputBuffer.get(csd);
+//                    mByteBufferTransfer.setCsd(csd);
+//                    Log.i(TAG, "h265 csd0=" + bytesToHex(csd));
+//                }
+//            }
+
+            byte[] csd;
+            if (outputBuffer != null) {
+                csd = GetCsd(outputBuffer);
+                if (csd != null){
+                    mByteBufferTransfer.setCsd(csd);
+                }
+            }
+
             //endregion
 
             //如果前一帧传输任务完成

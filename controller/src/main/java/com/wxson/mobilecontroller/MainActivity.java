@@ -27,7 +27,7 @@ import com.wxson.mobilecontroller.connection.ConnectFragment;
 import com.wxson.mobilecontroller.connection.ConnectPresenter;
 import com.wxson.mobilecontroller.connection.ControllerWifiServerService;
 import com.wxson.mobilecontroller.connection.IConnectionContract;
-import com.wxson.mobilecontroller.home.HomeFragment;
+import com.wxson.mobilecontroller.setting.SettingFragment;
 
 import java.net.InetAddress;
 import java.util.List;
@@ -37,7 +37,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class MainActivity extends AppCompatActivity
         implements ConnectFragment.OnFragmentInteractionListener,
         CameraManagerFragment.OnFragmentInteractionListener,
-        HomeFragment.OnFragmentInteractionListener,
+        SettingFragment.OnFragmentInteractionListener,
         EasyPermissions.PermissionCallbacks{
 
     protected static final String TAG = "MainActivity";
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity
     private Fragment mCurrentFragment;
     private ControllerWifiServerService mControllerWifiServerService;
 //    private TextView mTextMessage;
-    HomeFragment homeFragment;
+    SettingFragment settingFragment;
     CameraManagerFragment cameraManagerFragment;
     ConnectFragment connectFragment;
     private IConnectionContract.IPresenterController mConnectPresenter;
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    manageFragments(homeFragment.getClass().getName());
+                    manageFragments(settingFragment.getClass().getName());
                     return true;
                 case R.id.navigation_camera:
                     manageFragments(cameraManagerFragment.getClass().getName());
@@ -133,17 +133,17 @@ public class MainActivity extends AppCompatActivity
         //绑定WifiServerService
         bindService();
         //正常启动时调用
-        homeFragment = HomeFragment.newInstance("","");
+        settingFragment = SettingFragment.newInstance("","");
         cameraManagerFragment = CameraManagerFragment.newInstance("","");
         connectFragment = ConnectFragment.newInstance("","");
 
         //把全体Fragment加入到FragmentManager
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
-        transaction.add(R.id.controllerFLayout,homeFragment,homeFragment.getClass().getName()).show(homeFragment);
+        transaction.add(R.id.controllerFLayout, settingFragment, settingFragment.getClass().getName()).show(settingFragment);
         transaction.add(R.id.controllerFLayout,cameraManagerFragment,cameraManagerFragment.getClass().getName()).hide(cameraManagerFragment);
         transaction.add(R.id.controllerFLayout,connectFragment,connectFragment.getClass().getName()).hide(connectFragment);
         transaction.commit();
-        mCurrentFragment = homeFragment;
+        mCurrentFragment = settingFragment;
         sendFragmentIntent();
 
         // Create the presenter
@@ -169,6 +169,10 @@ public class MainActivity extends AppCompatActivity
         switch (text){
             case "capture":
                 mConnectPresenter.startStringTransferTask("capture");
+                break;
+            case "setting":
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intent);
                 break;
         }
     }

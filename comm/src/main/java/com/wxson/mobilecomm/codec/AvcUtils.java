@@ -4,8 +4,11 @@ import android.util.Log;
 
 import java.nio.ByteBuffer;
 
+import static com.wxson.mobilecomm.tool.CommonTools.bytesToHex;
+
 
 public class AvcUtils {
+    private static final String TAG = "AvcUtils";
 	public static final int START_PREFIX_CODE = 0x00000001;
 	public static final int START_PREFIX_LENGTH = 4;
 	public static final int NAL_UNIT_HEADER_LENGTH = 1;
@@ -112,5 +115,33 @@ public class AvcUtils {
 		return returnValue;
 	}
 
+	/**
+	 *  get csd from video ByteBuffer for decode
+	 * @param byteBuffer video ByteBuffer
+	 * @return byte[] csd
+	 */
+	public static byte[] GetCsd(ByteBuffer byteBuffer){
+		byte[] csd;
+		// for h264
+		if ((byteBuffer.get(4) & 0x1f) == NAL_TYPE_SPS){ //如果byteBuffer第四个字节的后5位等于7
+			csd = new byte[byteBuffer.remaining()];
+			byteBuffer.get(csd);
+            Log.i(TAG, "GetCsd for h264 csd=" + bytesToHex(csd));
+		}
+		else {
+			//for h265
+			int nalType = (byteBuffer.get(4) >> 1) & 0x3f;
+			if (nalType == 32){
+				csd = new byte[byteBuffer.remaining()];
+				byteBuffer.get(csd);
+                Log.i(TAG, "GetCsd for h265 csd=" + bytesToHex(csd));
+			}
+			else{
+				csd = null;
+                Log.i(TAG, "csd= null");
+			}
+		}
+		return csd;
+	}
 
 }

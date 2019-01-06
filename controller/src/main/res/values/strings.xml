@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">相机遥控器</string>
     <string name="title_activity_main">相机遥控器</string>
-    <string name="title_home">Home</string>
+    <string name="title_setting">设置</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="localDeviceInfo">本设备信息</string>
@@ -22,4 +22,45 @@
     <string name="menuDirectEnable">Wifi 开关</string>
     <string name="menuDirectDiscover">搜索</string>
     <string name="location_rationale">本APP运行必须取得定位权限</string>
+    <string name="systemSetting">设置</string>
+
+    <string name="pref_header_codec">视频编码</string>
+
+    <string name="pref_title_mime_select">视频传送编码格式</string>
+    <string-array name="pref_mime_list_titles">
+        <item>H264</item>
+        <item>H265</item>
+    </string-array>
+    <string-array name="pref_mime_list_values">
+        <item>video/avc</item>
+        <item>video/hevc</item>
+    </string-array>
+
+    <string name="pref_title_size_select">分辨率</string>
+    <string-array name="pref_size_list_titles">
+        <item>320x240</item>
+        <item>640x480</item>
+        <item>800x600</item>
+        <item>960x720</item>
+        <item>1280x720</item>
+        <item>1440x1080</item>
+        <item>1920x1080</item>
+        <item>1920x1440</item>
+    </string-array>
+    <string-array name="pref_size_list_values">
+        <item>320x240</item>
+        <item>640x480</item>
+        <item>800x600</item>
+        <item>960x720</item>
+        <item>1280x720</item>
+        <item>1440x1080</item>
+        <item>1920x1080</item>
+        <item>1920x1440</item>
+    </string-array>
+    <string name="title_activity_settings">设置</string>
+    <string name="codec_setting_summary">为了保证相机和控制器之间数据的顺利传输，请务必设置相同的编码格式和分辨率。</string>
+    <string name="btnSettingTitle">设置</string>
+
+    <string name="pref_ringtone_silent">Silent</string>
+
 </resources>
