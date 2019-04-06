@@ -31,7 +31,7 @@ public class H264Format implements IFormatModel {
         MediaFormat encodeFormat = MediaFormat.createVideoFormat(mMime, mWidth, mHeight);
         encodeFormat.setInteger(MediaFormat.KEY_BIT_RATE, mWidth * mHeight * bitRateFactor);
         encodeFormat.setInteger(MediaFormat.KEY_FRAME_RATE, frameRate);
-        encodeFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
+        encodeFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);    // This format is ok.
         encodeFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, frameInterval);
 
         return encodeFormat;

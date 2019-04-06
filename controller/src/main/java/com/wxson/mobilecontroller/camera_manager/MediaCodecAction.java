@@ -14,6 +14,8 @@ import com.wxson.mobilecomm.codec.IFormatModel;
 
 import java.io.IOException;
 
+import static android.media.MediaFormat.KEY_COLOR_FORMAT;
+
 /**
  * Created by wxson on 2018/7/2.
  * Package com.wxson.mobilecontroller.camera_manager.
@@ -48,13 +50,8 @@ public class MediaCodecAction {
             else{
                 codecFormat = new H264Format(width, height);
             }
-//            IFormatModel codecFormat = new H264Format(640, 480);
-
-//            mediaCodec.configure(h265VgaFormat.getDecodeFormat(csd), surface, null, 0);
-//            mediaCodec.configure(h264_640x480_Format.getDecodeFormat(csd), surface, null, 0);
             mediaCodec.configure(codecFormat.getDecodeFormat(csd), surface, null, 0);
-//            mediaCodec.configure(qVgaFormat.getDecodeFormat(csd), surface, null, 0);
-            Log.e(TAG, "DecoderCallback mMediaCodec.configure");
+            Log.i(TAG, "DecoderCallback mMediaCodec.configure");
             return mediaCodec;
         } catch (IOException e) {
             e.printStackTrace();

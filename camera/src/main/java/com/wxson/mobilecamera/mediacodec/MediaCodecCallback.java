@@ -44,23 +44,6 @@ public class MediaCodecCallback {
             //region for debug only
             //取得ByteBuffer
             ByteBuffer outputBuffer = mediaCodec.getOutputBuffer(index);
-//            // for h264
-//            if ((outputBuffer.get(4) & 0x1f) == 7) {    //h264: sps + pps
-//                byte[] csd = new byte[outputBuffer.remaining()];
-//                outputBuffer.get(csd);
-//                mByteBufferTransfer.setCsd(csd);
-//                Log.i(TAG, "h264 Sps+Pps=" + bytesToHex(csd));
-//            }
-//            else{
-//                // for h265
-//                int nalType = (outputBuffer.get(4) >> 1) & 0x3f;
-//                if (nalType == 32){                         //h265
-//                    byte[] csd = new byte[outputBuffer.remaining()];
-//                    outputBuffer.get(csd);
-//                    mByteBufferTransfer.setCsd(csd);
-//                    Log.i(TAG, "h265 csd0=" + bytesToHex(csd));
-//                }
-//            }
 
             byte[] csd;
             if (outputBuffer != null) {

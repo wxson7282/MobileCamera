@@ -25,12 +25,6 @@ public class MediaCodecUtil {
             if (mediaCodecInfo!=null){
 //                MediaCodecInfo.CodecCapabilities codecCapabilities = getCodecCapabilities(mimeValue.toString(),mediaCodecInfo);
 //                MediaCodecInfo.VideoCapabilities videoCapabilities = getVideoCapabilities(codecCapabilities);
-//
-//                Log.i(TAG, "IsSizeSupported(320, 240)=" + videoCapabilities.isSizeSupported(320,240));
-//                Log.i(TAG, "IsSizeSupported(640, 480)=" + videoCapabilities.isSizeSupported(640,480));
-//                Log.i(TAG, "IsSizeSupported(800, 600)=" + videoCapabilities.isSizeSupported(800,600));
-//                Log.i(TAG, "IsSizeSupported(1024, 768)=" + videoCapabilities.isSizeSupported(1024,768));
-//                Log.i(TAG, "IsSizeSupported(1280, 1024)=" + videoCapabilities.isSizeSupported(1280,1024));
 
                 availableMimes.add(mimeValue);
             };

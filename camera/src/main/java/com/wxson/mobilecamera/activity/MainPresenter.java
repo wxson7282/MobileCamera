@@ -29,7 +29,6 @@ import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
 import android.os.IBinder;
-import android.preference.ListPreference;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
@@ -44,7 +43,9 @@ import android.webkit.MimeTypeMap;
 import com.wxson.mobilecamera.R;
 import com.wxson.mobilecamera.connect.CameraWifiServerService;
 import com.wxson.mobilecamera.mediacodec.MediaCodecCallback;
-import com.wxson.mobilecomm.codec.*;
+import com.wxson.mobilecomm.codec.H264Format;
+import com.wxson.mobilecomm.codec.H265Format;
+import com.wxson.mobilecomm.codec.IFormatModel;
 import com.wxson.mobilecomm.connect.ByteBufferTransfer;
 import com.wxson.mobilecomm.connect.ByteBufferTransferTask;
 import com.wxson.mobilecomm.connect.DirectBroadcastReceiver;
@@ -635,6 +636,8 @@ public class MainPresenter implements IMainContract.Presenter {
             //取得预设的编码格式
             SharedPreferences sharedPreferences =PreferenceManager.getDefaultSharedPreferences(mContext);
             String mime = sharedPreferences.getString("mime_list", "");
+            //根据视频编码类型查询可用颜色格式
+
             // 根据视频编码类型创建编码器
             mMediaCodec = MediaCodec.createEncoderByType(mime);
             // Set up Callback for the Encoder
@@ -706,8 +709,7 @@ public class MainPresenter implements IMainContract.Presenter {
             );
             //endregion
         }
-        catch (CameraAccessException e)
-        {
+        catch (CameraAccessException e){
             e.printStackTrace();
         }
         catch (IOException ie){
@@ -716,6 +718,4 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     //endregion
-
-
 }
